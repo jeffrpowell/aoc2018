@@ -59,6 +59,7 @@ public class Day6 implements Solution<Point2D>
                 enqueueNextSeeks(generateNeighborSeeks(s));
             }
         }
+        findInfiniteRoots();
         Map<Point2D, Point2D> dedupedClosestRoot = closestRoot.asMap().entrySet().stream()
             .filter(entry -> entry.getValue().size() == 1)
             .collect(Collectors.toMap(
@@ -107,25 +108,25 @@ public class Day6 implements Solution<Point2D>
             neighbors.add(new Seek(seek.getDistanceTravelled() + 1, new Point2D.Double(pt.getX() - 1, pt.getY()), seek));
         }
         else {
-            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
+//            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
         }
         if (pt.getX() < bottomRight.getX()) {
             neighbors.add(new Seek(seek.getDistanceTravelled() + 1, new Point2D.Double(pt.getX() + 1, pt.getY()), seek));
         }
         else {
-            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
+//            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
         }
         if (pt.getY() > topLeft.getY()) {
             neighbors.add(new Seek(seek.getDistanceTravelled() + 1, new Point2D.Double(pt.getX(), pt.getY() - 1), seek));
         }
         else {
-            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
+//            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
         }
         if (pt.getY() < bottomRight.getY()) {
             neighbors.add(new Seek(seek.getDistanceTravelled() + 1, new Point2D.Double(pt.getX(), pt.getY() + 1), seek));
         }
         else {
-            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
+//            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
         }
         if (seek.getParent() != null) {
             return neighbors.stream().filter(s -> !s.getPt().equals(seek.getParent().getPt())).collect(Collectors.toList());
@@ -139,6 +140,24 @@ public class Day6 implements Solution<Point2D>
         for (Seek s : seeks) {
 //            ptToSeekIndex.put(s.getPt(), s);
             queue.offer(s);
+        }
+    }
+    
+    private void findInfiniteRoots() {
+        Set<Point2D> pointsToCheck = new HashSet<>();
+        for (double x = topLeft.getX(); x <= bottomRight.getX(); x++) {
+            pointsToCheck.add(new Point2D.Double(x, topLeft.getY()));
+            pointsToCheck.add(new Point2D.Double(x, bottomRight.getY()));
+        }
+        for (double y = topLeft.getY(); y < bottomRight.getY(); y++) {
+            pointsToCheck.add(new Point2D.Double(topLeft.getX(), y));
+            pointsToCheck.add(new Point2D.Double(bottomRight.getX(), y));
+        }
+        for (Point2D pt : pointsToCheck) {
+            Set<Point2D> closestRootsForPt = closestRoot.get(pt);
+            if (closestRootsForPt.size() == 1) {
+                rootsWithInfiniteArea.add(closestRootsForPt.iterator().next());
+            }
         }
     }
 
