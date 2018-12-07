@@ -41,7 +41,7 @@ public class Day6 implements Solution<Point2D>
             }
             ptToSeekIndex.put(pt, rootSeek);
             closestRoot.put(pt, pt);
-            enqueueNextSeeks(generateNeighborSeeks(rootSeek));
+            generateNeighborSeeksAndEnqueue(rootSeek);
         }
         while(!queue.isEmpty()) {
             Seek s = queue.poll();
@@ -56,7 +56,7 @@ public class Day6 implements Solution<Point2D>
             }
             else {
                 recordNewClosestRoot(s);
-                enqueueNextSeeks(generateNeighborSeeks(s));
+                generateNeighborSeeksAndEnqueue(s);
             }
         }
         findInfiniteRoots();
@@ -72,12 +72,7 @@ public class Day6 implements Solution<Point2D>
         }
         return Integer.toString(rootToClosestPoints.asMap().entrySet().stream()
             .filter(entry -> !rootsWithInfiniteArea.contains(entry.getKey()))
-            .reduce(0, (minSoFar, entry) -> Math.min(minSoFar, entry.getValue().size()), BinaryOperator.minBy(Integer::compare)));
-    }
-    
-    @Override
-    public String part2(List<Point2D> input) {
-        return null;
+            .reduce(0, (maxSoFar, entry) -> Math.max(maxSoFar, entry.getValue().size()), BinaryOperator.maxBy(Integer::compare)));
     }
 
     private void setGridBounds(List<Point2D> input) {
@@ -101,45 +96,26 @@ public class Day6 implements Solution<Point2D>
         return needles.stream().anyMatch(haystack::contains);
     }
     
-    private List<Seek> generateNeighborSeeks(Seek seek) {
+    private void generateNeighborSeeksAndEnqueue(Seek seek) {
         Point2D pt = seek.getPt();
         List<Seek> neighbors = new ArrayList<>();
         if (pt.getX() > topLeft.getX()) {
             neighbors.add(new Seek(seek.getDistanceTravelled() + 1, new Point2D.Double(pt.getX() - 1, pt.getY()), seek));
         }
-        else {
-//            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
-        }
         if (pt.getX() < bottomRight.getX()) {
             neighbors.add(new Seek(seek.getDistanceTravelled() + 1, new Point2D.Double(pt.getX() + 1, pt.getY()), seek));
-        }
-        else {
-//            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
         }
         if (pt.getY() > topLeft.getY()) {
             neighbors.add(new Seek(seek.getDistanceTravelled() + 1, new Point2D.Double(pt.getX(), pt.getY() - 1), seek));
         }
-        else {
-//            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
-        }
         if (pt.getY() < bottomRight.getY()) {
             neighbors.add(new Seek(seek.getDistanceTravelled() + 1, new Point2D.Double(pt.getX(), pt.getY() + 1), seek));
         }
-        else {
-//            rootsWithInfiniteArea.addAll(closestRoot.get(pt));
-        }
         if (seek.getParent() != null) {
-            return neighbors.stream().filter(s -> !s.getPt().equals(seek.getParent().getPt())).collect(Collectors.toList());
+            neighbors.stream().filter(s -> !s.getPt().equals(seek.getParent().getPt())).forEach(queue::offer);
         }
         else {
-            return neighbors;
-        }
-    }
-    
-    private void enqueueNextSeeks(List<Seek> seeks) {
-        for (Seek s : seeks) {
-//            ptToSeekIndex.put(s.getPt(), s);
-            queue.offer(s);
+            neighbors.stream().forEach(queue::offer);
         }
     }
     
@@ -227,4 +203,23 @@ public class Day6 implements Solution<Point2D>
             return getPt().getX() + "," + getPt().getY();
         }
     }
+	
+    @Override
+    public String part2(List<Point2D> input) {
+        setGridBounds(input);
+		int ptsInRegion = 0;
+		for (double x = topLeft.getX(); x <= bottomRight.getX(); x++)
+		{
+			for (double y = topLeft.getY(); y <= bottomRight.getY(); y++) {
+				if (distanceToRoots(input, x, y) < 10000) {
+					ptsInRegion++;
+				}
+			}
+		}
+		return Integer.toString(ptsInRegion);
+    }
+	
+	private int distanceToRoots(List<Point2D> roots, double x, double y) {
+		return roots.stream().reduce(0D, (total, root) -> total + Math.abs(x - root.getX()) + Math.abs(y - root.getY()), (a, b) -> a + b).intValue();
+	}
 }

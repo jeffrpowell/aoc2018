@@ -1,5 +1,6 @@
 package com.jeffrpowell.aoc2018;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ public class Inputs
     public static final List<Integer> DAY1 = new ArrayList<>();
     public static final List<String> DAY2 = new ArrayList<>();
     public static final List<String> DAY3 = new ArrayList<>();
+    public static final List<Point2D> DAY6 = new ArrayList<>();
     
     static {
         //<editor-fold defaultstate="collapsed" desc="day 1">
@@ -2637,5 +2639,58 @@ public class Inputs
         DAY3.add("#1349 @ 869,323: 14x21");
 
 //</editor-fold>
-    }
+		//<editor-fold defaultstate="collapsed" desc="day 6">
+		DAY6.add(new Point2D.Double(135, 127));
+		DAY6.add(new Point2D.Double(251, 77));
+		DAY6.add(new Point2D.Double(136, 244));
+		DAY6.add(new Point2D.Double(123, 169));
+		DAY6.add(new Point2D.Double(253, 257));
+		DAY6.add(new Point2D.Double(359, 309));
+		DAY6.add(new Point2D.Double(100, 247));
+		DAY6.add(new Point2D.Double(191, 323));
+		DAY6.add(new Point2D.Double(129, 323));
+		DAY6.add(new Point2D.Double(76, 284));
+		DAY6.add(new Point2D.Double(69, 56));
+		DAY6.add(new Point2D.Double(229, 266));
+		DAY6.add(new Point2D.Double(74, 216));
+		DAY6.add(new Point2D.Double(236, 130));
+		DAY6.add(new Point2D.Double(152, 126));
+		DAY6.add(new Point2D.Double(174, 319));
+		DAY6.add(new Point2D.Double(315, 105));
+		DAY6.add(new Point2D.Double(329, 146));
+		DAY6.add(new Point2D.Double(288, 51));
+		DAY6.add(new Point2D.Double(184, 344));
+		DAY6.add(new Point2D.Double(173, 69));
+		DAY6.add(new Point2D.Double(293, 80));
+		DAY6.add(new Point2D.Double(230, 270));
+		DAY6.add(new Point2D.Double(279, 84));
+		DAY6.add(new Point2D.Double(107, 163));
+		DAY6.add(new Point2D.Double(130, 176));
+		DAY6.add(new Point2D.Double(347, 114));
+		DAY6.add(new Point2D.Double(133, 331));
+		DAY6.add(new Point2D.Double(237, 300));
+		DAY6.add(new Point2D.Double(291, 283));
+		DAY6.add(new Point2D.Double(246, 297));
+		DAY6.add(new Point2D.Double(60, 359));
+		DAY6.add(new Point2D.Double(312, 278));
+		DAY6.add(new Point2D.Double(242, 76));
+		DAY6.add(new Point2D.Double(81, 356));
+		DAY6.add(new Point2D.Double(204, 291));
+		DAY6.add(new Point2D.Double(187, 335));
+		DAY6.add(new Point2D.Double(176, 98));
+		DAY6.add(new Point2D.Double(103, 274));
+		DAY6.add(new Point2D.Double(357, 144));
+		DAY6.add(new Point2D.Double(314, 118));
+		DAY6.add(new Point2D.Double(67, 196));
+		DAY6.add(new Point2D.Double(156, 265));
+		DAY6.add(new Point2D.Double(254, 357));
+		DAY6.add(new Point2D.Double(218, 271));
+		DAY6.add(new Point2D.Double(118, 94));
+		DAY6.add(new Point2D.Double(300, 189));
+		DAY6.add(new Point2D.Double(290, 356));
+		DAY6.add(new Point2D.Double(354, 91));
+		DAY6.add(new Point2D.Double(209, 334));
+
+//</editor-fold>
+	}
 }
