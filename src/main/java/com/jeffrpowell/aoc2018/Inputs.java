@@ -11,6 +11,7 @@ public class Inputs
     public static final List<String> DAY3 = new ArrayList<>();
 	public static final List<String> DAY5 = new ArrayList<>();
     public static final List<Point2D> DAY6 = new ArrayList<>();
+	public static final List<String> DAY7 = new ArrayList<>();
     
     static {
         //<editor-fold defaultstate="collapsed" desc="day 1">
@@ -2694,6 +2695,110 @@ public class Inputs
 		DAY6.add(new Point2D.Double(290, 356));
 		DAY6.add(new Point2D.Double(354, 91));
 		DAY6.add(new Point2D.Double(209, 334));
+
+//</editor-fold>
+		//<editor-fold defaultstate="collapsed" desc="day 7">
+		DAY7.add("Step P must be finished before step R can begin.");
+		DAY7.add("Step V must be finished before step J can begin.");
+		DAY7.add("Step O must be finished before step K can begin.");
+		DAY7.add("Step S must be finished before step W can begin.");
+		DAY7.add("Step H must be finished before step E can begin.");
+		DAY7.add("Step K must be finished before step Y can begin.");
+		DAY7.add("Step B must be finished before step Z can begin.");
+		DAY7.add("Step N must be finished before step G can begin.");
+		DAY7.add("Step W must be finished before step I can begin.");
+		DAY7.add("Step L must be finished before step Y can begin.");
+		DAY7.add("Step U must be finished before step Q can begin.");
+		DAY7.add("Step R must be finished before step Z can begin.");
+		DAY7.add("Step Z must be finished before step E can begin.");
+		DAY7.add("Step C must be finished before step I can begin.");
+		DAY7.add("Step I must be finished before step Q can begin.");
+		DAY7.add("Step D must be finished before step E can begin.");
+		DAY7.add("Step A must be finished before step J can begin.");
+		DAY7.add("Step G must be finished before step Y can begin.");
+		DAY7.add("Step M must be finished before step T can begin.");
+		DAY7.add("Step E must be finished before step X can begin.");
+		DAY7.add("Step F must be finished before step T can begin.");
+		DAY7.add("Step X must be finished before step J can begin.");
+		DAY7.add("Step Y must be finished before step J can begin.");
+		DAY7.add("Step T must be finished before step Q can begin.");
+		DAY7.add("Step J must be finished before step Q can begin.");
+		DAY7.add("Step E must be finished before step Y can begin.");
+		DAY7.add("Step A must be finished before step T can begin.");
+		DAY7.add("Step P must be finished before step H can begin.");
+		DAY7.add("Step W must be finished before step R can begin.");
+		DAY7.add("Step Y must be finished before step Q can begin.");
+		DAY7.add("Step W must be finished before step M can begin.");
+		DAY7.add("Step O must be finished before step M can begin.");
+		DAY7.add("Step H must be finished before step R can begin.");
+		DAY7.add("Step N must be finished before step L can begin.");
+		DAY7.add("Step V must be finished before step W can begin.");
+		DAY7.add("Step S must be finished before step Q can begin.");
+		DAY7.add("Step D must be finished before step J can begin.");
+		DAY7.add("Step W must be finished before step E can begin.");
+		DAY7.add("Step V must be finished before step Y can begin.");
+		DAY7.add("Step O must be finished before step C can begin.");
+		DAY7.add("Step B must be finished before step T can begin.");
+		DAY7.add("Step W must be finished before step T can begin.");
+		DAY7.add("Step G must be finished before step T can begin.");
+		DAY7.add("Step D must be finished before step T can begin.");
+		DAY7.add("Step P must be finished before step E can begin.");
+		DAY7.add("Step P must be finished before step J can begin.");
+		DAY7.add("Step G must be finished before step E can begin.");
+		DAY7.add("Step Z must be finished before step M can begin.");
+		DAY7.add("Step K must be finished before step T can begin.");
+		DAY7.add("Step H must be finished before step U can begin.");
+		DAY7.add("Step P must be finished before step T can begin.");
+		DAY7.add("Step W must be finished before step A can begin.");
+		DAY7.add("Step A must be finished before step F can begin.");
+		DAY7.add("Step F must be finished before step Y can begin.");
+		DAY7.add("Step H must be finished before step M can begin.");
+		DAY7.add("Step T must be finished before step J can begin.");
+		DAY7.add("Step O must be finished before step S can begin.");
+		DAY7.add("Step P must be finished before step M can begin.");
+		DAY7.add("Step X must be finished before step T can begin.");
+		DAY7.add("Step S must be finished before step J can begin.");
+		DAY7.add("Step H must be finished before step C can begin.");
+		DAY7.add("Step B must be finished before step W can begin.");
+		DAY7.add("Step K must be finished before step N can begin.");
+		DAY7.add("Step E must be finished before step T can begin.");
+		DAY7.add("Step S must be finished before step Y can begin.");
+		DAY7.add("Step C must be finished before step G can begin.");
+		DAY7.add("Step R must be finished before step D can begin.");
+		DAY7.add("Step N must be finished before step U can begin.");
+		DAY7.add("Step O must be finished before step L can begin.");
+		DAY7.add("Step B must be finished before step F can begin.");
+		DAY7.add("Step S must be finished before step F can begin.");
+		DAY7.add("Step X must be finished before step Y can begin.");
+		DAY7.add("Step S must be finished before step D can begin.");
+		DAY7.add("Step R must be finished before step E can begin.");
+		DAY7.add("Step S must be finished before step A can begin.");
+		DAY7.add("Step S must be finished before step X can begin.");
+		DAY7.add("Step A must be finished before step G can begin.");
+		DAY7.add("Step E must be finished before step F can begin.");
+		DAY7.add("Step P must be finished before step A can begin.");
+		DAY7.add("Step A must be finished before step M can begin.");
+		DAY7.add("Step E must be finished before step Q can begin.");
+		DAY7.add("Step H must be finished before step W can begin.");
+		DAY7.add("Step W must be finished before step U can begin.");
+		DAY7.add("Step F must be finished before step Q can begin.");
+		DAY7.add("Step I must be finished before step J can begin.");
+		DAY7.add("Step H must be finished before step G can begin.");
+		DAY7.add("Step I must be finished before step G can begin.");
+		DAY7.add("Step P must be finished before step X can begin.");
+		DAY7.add("Step I must be finished before step D can begin.");
+		DAY7.add("Step R must be finished before step X can begin.");
+		DAY7.add("Step S must be finished before step I can begin.");
+		DAY7.add("Step Y must be finished before step T can begin.");
+		DAY7.add("Step R must be finished before step G can begin.");
+		DAY7.add("Step I must be finished before step X can begin.");
+		DAY7.add("Step B must be finished before step D can begin.");
+		DAY7.add("Step X must be finished before step Q can begin.");
+		DAY7.add("Step F must be finished before step X can begin.");
+		DAY7.add("Step V must be finished before step R can begin.");
+		DAY7.add("Step C must be finished before step J can begin.");
+		DAY7.add("Step L must be finished before step Q can begin.");
+		DAY7.add("Step K must be finished before step B can begin.");
 
 //</editor-fold>
 	}
