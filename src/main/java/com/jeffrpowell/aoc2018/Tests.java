@@ -3,12 +3,15 @@ package com.jeffrpowell.aoc2018;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Tests
 {
     public static final List<String> DAY3 = new ArrayList<>();
     public static final List<Point2D> DAY6 = new ArrayList<>();
 	public static final List<String> DAY7 = new ArrayList<>();
+	public static final List<Integer> DAY8 = new ArrayList<>();
     
     static {
         DAY3.add("#1 @ 1,3: 4x4");
@@ -27,5 +30,11 @@ public class Tests
 		DAY7.add("Step B must be finished before step E can begin.");
 		DAY7.add("Step D must be finished before step E can begin.");
 		DAY7.add("Step F must be finished before step E can begin.");
+		String day8 = "2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2";
+		Pattern number = Pattern.compile("(\\d+)");
+		Matcher m = number.matcher(day8);
+		while(m.find()) {
+			DAY8.add(Integer.parseInt(m.group(1)));
+		}
     }
 }
