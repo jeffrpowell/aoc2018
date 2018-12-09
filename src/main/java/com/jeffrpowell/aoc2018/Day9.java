@@ -1,8 +1,8 @@
 package com.jeffrpowell.aoc2018;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +15,7 @@ public class Day9 implements Solution<Integer>{
 
 	public Day9()
 	{
-		this.circle = new LinkedList<>();
+		this.circle = new ArrayList<>();
 		circle.add(0);
 		this.multsOf23 = new HashSet<>();
 	}
