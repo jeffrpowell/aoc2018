@@ -12,6 +12,7 @@ public class Tests
     public static final List<Point2D> DAY6 = new ArrayList<>();
 	public static final List<String> DAY7 = new ArrayList<>();
 	public static final List<Integer> DAY8 = new ArrayList<>();
+	public static final List<Integer> DAY9 = new ArrayList<>();
     
     static {
         DAY3.add("#1 @ 1,3: 4x4");
@@ -35,6 +36,12 @@ public class Tests
 		Matcher m = number.matcher(day8);
 		while(m.find()) {
 			DAY8.add(Integer.parseInt(m.group(1)));
+		}
+		String day9 = "9 players; last marble is worth 25 points";
+//		String day9 = "10 players; last marble is worth 1618 points"; 
+		Matcher m9 = number.matcher(day9);
+		while(m9.find()) {
+			DAY9.add(Integer.parseInt(m9.group(1)));
 		}
     }
 }
