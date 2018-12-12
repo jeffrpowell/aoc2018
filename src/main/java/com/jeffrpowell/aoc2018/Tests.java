@@ -15,6 +15,7 @@ public class Tests
 	public static final List<Integer> DAY9 = new ArrayList<>();
 	public static final List<String> DAY10 = new ArrayList<>();
 	public static final List<Integer> DAY11 = new ArrayList<>();
+	public static final List<String> DAY12 = new ArrayList<>();
     
     static {
         DAY3.add("#1 @ 1,3: 4x4");
@@ -77,5 +78,20 @@ public class Tests
         DAY10.add("position=<14,  7> velocity=<-2,  0>");
         DAY10.add("position=<-3,  6> velocity=< 2, -1>");
         DAY11.add(18);
+        DAY12.add("#..#.#..##......###...###");
+        DAY12.add("...## => #");
+        DAY12.add("..#.. => #");
+        DAY12.add(".#... => #");
+        DAY12.add(".#.#. => #");
+        DAY12.add(".#.## => #");
+        DAY12.add(".##.. => #");
+        DAY12.add(".#### => #");
+        DAY12.add("#.#.# => #");
+        DAY12.add("#.### => #");
+        DAY12.add("##.#. => #");
+        DAY12.add("##.## => #");
+        DAY12.add("###.. => #");
+        DAY12.add("###.# => #");
+        DAY12.add("####. => #");
     }
 }
