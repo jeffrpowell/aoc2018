@@ -1,14 +1,12 @@
 package com.jeffrpowell.aoc2018;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Day11 implements Solution<Integer>
 {
@@ -18,44 +16,28 @@ public class Day11 implements Solution<Integer>
     @Override
     public String part1(List<Integer> input) {
         serial = input.get(0);
-        List<List<Integer>> powerLevels = IntStream.rangeClosed(1, GRID_SIZE).mapToObj(x -> 
-            IntStream.rangeClosed(1, GRID_SIZE).mapToObj(y -> 
-                new Point2D.Double(x, y)
-            ).map(this::getPowerLevel).collect(Collectors.toList())
-        ).collect(Collectors.toList());
+        List<List<Integer>> powerLevels = new ArrayList<>();
+        for (int x = 1; x <= GRID_SIZE; x++) {
+            List<Integer> row = new ArrayList<>();
+            for (int y = 1; y <= GRID_SIZE; y++) {
+                row.add(getPowerLevel(new Point2D.Double(x, y)));
+            }
+            powerLevels.add(row);
+        }
         Map<Point2D, Integer> sums = new HashMap<>();
-        Iterator<List<Integer>> powerLevelsIterator = powerLevels.iterator();
-        List<Integer> firstRow;
-        List<Integer> secondRow = powerLevelsIterator.next();
-        List<Integer> thirdRow = powerLevelsIterator.next();
-        for (int y = 0; y < GRID_SIZE - 2; y++) {
-            firstRow = secondRow;
-            secondRow = thirdRow;
-            thirdRow = powerLevelsIterator.next();
-            
-            Iterator<Integer> powerLevelFirstRowIterator = firstRow.iterator();
-            Iterator<Integer> powerLevelSecondRowIterator = secondRow.iterator();
-            Iterator<Integer> powerLevelThirdRowIterator = thirdRow.iterator();
-            Integer first_1;
-            Integer first_2 = powerLevelFirstRowIterator.next();
-            Integer first_3 = powerLevelFirstRowIterator.next();
-            Integer second_1;
-            Integer second_2 = powerLevelSecondRowIterator.next();
-            Integer second_3 = powerLevelSecondRowIterator.next();
-            Integer third_1;
-            Integer third_2 = powerLevelThirdRowIterator.next();
-            Integer third_3 = powerLevelThirdRowIterator.next();
-            for(int x = 0; x < GRID_SIZE - 2; x++) {
-                first_1 = first_2;
-                first_2 = first_3;
-                first_3 = powerLevelFirstRowIterator.next();
-                second_1 = second_2;
-                second_2 = second_3;
-                second_3 = powerLevelSecondRowIterator.next();
-                third_1 = third_2;
-                third_2 = third_3;
-                third_3 = powerLevelThirdRowIterator.next();
-                sums.put(new Point2D.Double(x, y), first_1 + first_2 + first_3 + second_1 + second_2 + second_3 + third_1 + third_2 + third_3);
+        
+        for (int x = 0; x < GRID_SIZE - 2; x++) {
+            for (int y = 0; y < GRID_SIZE - 2; y++) {
+                int sum = powerLevels.get(x).get(y) + 
+                          powerLevels.get(x+1).get(y) + 
+                          powerLevels.get(x+2).get(y) + 
+                          powerLevels.get(x).get(y+1) + 
+                          powerLevels.get(x+1).get(y+1) + 
+                          powerLevels.get(x+2).get(y+1) + 
+                          powerLevels.get(x).get(y+2) + 
+                          powerLevels.get(x+1).get(y+2) + 
+                          powerLevels.get(x+2).get(y+2);
+                sums.put(new Point2D.Double(x + 1, y + 1), sum);
             }
         }
         Point2D highestSumPt = sums.entrySet().stream().reduce(BinaryOperator.maxBy(Comparator.comparing(Map.Entry::getValue))).get().getKey();
@@ -80,7 +62,7 @@ public class Day11 implements Solution<Integer>
     }
     
     private double getRackId(Point2D pt) {
-        return pt.getX();
+        return pt.getX() + 10;
     }
 
     @Override
