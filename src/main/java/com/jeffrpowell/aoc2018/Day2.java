@@ -1,6 +1,5 @@
 package com.jeffrpowell.aoc2018;
 
-import com.jeffrpowell.aoc2018.Solution;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

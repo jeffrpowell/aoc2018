@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class Tests
 {
     public static final List<String> DAY3 = new ArrayList<>();
+    public static final List<String> DAY4 = new ArrayList<>();
     public static final List<Point2D> DAY6 = new ArrayList<>();
 	public static final List<String> DAY7 = new ArrayList<>();
 	public static final List<Integer> DAY8 = new ArrayList<>();
@@ -24,6 +25,23 @@ public class Tests
         DAY3.add("#1 @ 1,3: 4x4");
         DAY3.add("#2 @ 3,1: 4x4");
         DAY3.add("#3 @ 5,5: 2x2");
+		DAY4.add("[1518-11-01 00:00] Guard #10 begins shift");
+		DAY4.add("[1518-11-01 00:05] falls asleep");
+		DAY4.add("[1518-11-01 00:25] wakes up");
+		DAY4.add("[1518-11-01 00:30] falls asleep");
+		DAY4.add("[1518-11-01 00:55] wakes up");
+		DAY4.add("[1518-11-01 23:58] Guard #99 begins shift");
+		DAY4.add("[1518-11-02 00:40] falls asleep");
+		DAY4.add("[1518-11-02 00:50] wakes up");
+		DAY4.add("[1518-11-03 00:05] Guard #10 begins shift");
+		DAY4.add("[1518-11-03 00:24] falls asleep");
+		DAY4.add("[1518-11-03 00:29] wakes up");
+		DAY4.add("[1518-11-04 00:02] Guard #99 begins shift");
+		DAY4.add("[1518-11-04 00:36] falls asleep");
+		DAY4.add("[1518-11-04 00:46] wakes up");
+		DAY4.add("[1518-11-05 00:03] Guard #99 begins shift");
+		DAY4.add("[1518-11-05 00:45] falls asleep");
+		DAY4.add("[1518-11-05 00:55] wakes up");        
         DAY6.add(new Point2D.Double(1, 1));
         DAY6.add(new Point2D.Double(1, 6));
         DAY6.add(new Point2D.Double(8, 3));

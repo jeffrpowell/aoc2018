@@ -1,6 +1,5 @@
 package com.jeffrpowell.aoc2018;
 
-import com.jeffrpowell.aoc2018.Solution;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
