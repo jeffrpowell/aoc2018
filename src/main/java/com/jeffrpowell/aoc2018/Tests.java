@@ -20,6 +20,8 @@ public class Tests
 	public static final List<String> DAY13 = new ArrayList<>();
 	public static final List<String> DAY13_2 = new ArrayList<>();
 	public static final List<String> DAY13_3 = new ArrayList<>();
+	public static final List<Integer> DAY14 = new ArrayList<>();
+	public static final List<Integer> DAY14_2 = new ArrayList<>();
     
     static {
         DAY3.add("#1 @ 1,3: 4x4");
@@ -279,5 +281,7 @@ public class Tests
 		DAY13_3.add("                   \\---+---------------------------/                                              |\\-----+----------------------------/          |    ");
 		DAY13_3.add("                       \\--------------------------------------------------------------------------/      \\---------------------------------------/    ");        
 //</editor-fold>
-    }
+		DAY14.add(5);
+		DAY14_2.add(51589);
+	}
 }
