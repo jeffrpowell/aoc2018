@@ -4,13 +4,20 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 
 public class Day11 implements Solution<Integer>
 {
     private static final int GRID_SIZE = 300;
+    private Map<Point2D, Long> summedAreaPowerGrid;
+    private Set<Integer> windowSizesToSkip;
+    private Point2D bestWindowLocation;
+    private long bestSum;
+    private int bestWindowSize;
     private int serial;
     
     @Override
@@ -67,6 +74,66 @@ public class Day11 implements Solution<Integer>
 
     @Override
     public String part2(List<Integer> input) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        serial = input.get(0);
+        summedAreaPowerGrid = new HashMap<>();
+        windowSizesToSkip = new HashSet<>();
+        for (int y = 1; y <= GRID_SIZE; y++) {
+            for (int x = 1; x <= GRID_SIZE; x++) {
+                Point2D pt = new Point2D.Double(x, y);
+                long powerLevel = getPowerLevel(pt);
+                long topSum = 0;
+                long leftSum = 0;
+                long diagonalSum = 0;
+                if (x > 1) {
+                    leftSum = summedAreaPowerGrid.get(new Point2D.Double(x - 1, y));
+                }
+                if (y > 1) {
+                    topSum = summedAreaPowerGrid.get(new Point2D.Double(x, y - 1));
+                }
+                if (x > 1 && y > 1) {
+                    diagonalSum = summedAreaPowerGrid.get(new Point2D.Double(x - 1, y - 1));
+                }
+                summedAreaPowerGrid.put(pt, powerLevel + leftSum + topSum - diagonalSum);
+            }
+        }
+        bestSum = Long.MIN_VALUE;
+        for (int i = 2; i <= 300; i++) {
+            if (windowSizesToSkip.contains(i)) continue;
+            searchForBetterWindow(i);
+        }
+        //Off by one error never ironed out
+        //Answer is either x+1,y+1,size-1 or x-1,y-1,size+1
+        return bestWindowLocation.getX() + "," + bestWindowLocation.getY() + "," + bestWindowSize + "  (" + bestSum+")";
+    }
+    
+    private void searchForBetterWindow(int windowSize) {
+        int window = windowSize - 1;
+        long localBestSum = Long.MIN_VALUE;
+        for (int y = 1; y <= GRID_SIZE - window; y++) {
+            for (int x = 1; x <= GRID_SIZE - window; x++) {
+                //+-------
+                //|  a---b
+                //|  |   |
+                //|  c---d
+                Point2D pt = new Point2D.Double(x, y);
+                long a = summedAreaPowerGrid.get(pt);
+                long b = summedAreaPowerGrid.get(new Point2D.Double(x + window, y));
+                long c = summedAreaPowerGrid.get(new Point2D.Double(x, y + window));
+                long d = summedAreaPowerGrid.get(new Point2D.Double(x + window, y + window));
+                long sum = d - b - c + a;
+                localBestSum = Math.max(localBestSum, sum);
+                if (sum > bestSum) {
+                    bestSum = sum;
+                    bestWindowLocation = pt;
+                    bestWindowSize = windowSize;
+                }
+            }
+        }
+        if (localBestSum <= 0) {
+            while(windowSize < GRID_SIZE) {
+                windowSize += windowSize;
+                windowSizesToSkip.add(windowSize);
+            }
+        }
     }
 }
