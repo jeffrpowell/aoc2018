@@ -74,6 +74,7 @@ public class Day15 implements Solution<String>{
 		}
 		int turns = -1;
 		boolean complete = false;
+		printGrid();
 		while(!complete) {
 			turns++;
 			complete = evalRound();
@@ -106,14 +107,40 @@ public class Day15 implements Solution<String>{
 						return true;
 					}
 				}
-				continue;
 			}
 			else {
 				unit.tryMove(enemies);
 			}
+			printGrid();
 		}
 		allUnits.removeAll(eliminatedUnits);
 		return false;
+	}
+	
+	private void printGrid() {
+		StringBuilder builder = new StringBuilder();
+		for (int y = 0; y < 7; y++)
+		{
+			for (int x = 0; x < 7; x++)
+			{
+				Point2D pt = new Point2D.Double(x, y);
+				CellType type = map.get(pt);
+				if (type == CellType.WALL) {
+					builder.append('#');
+				}
+				else {
+					Optional<Unit> unit = allUnits.stream().filter(u -> u.getLocation().equals(pt)).findAny();
+					if (unit.isPresent()) {
+						builder.append(unit.get().isElf() ? 'E' : 'G');
+					}
+					else {
+						builder.append('.');
+					}
+				}
+			}
+			builder.append("\n");
+		}
+		System.out.println(builder.toString());
 	}
 
 	private static enum CellType {
@@ -175,18 +202,25 @@ public class Day15 implements Solution<String>{
 		public Set<Point2D> getOpenAdjacentPts(Point2D point) {
 			double x = point.getX();
 			double y = point.getY();
+			return getAdjacentPts(point).stream()
+				.filter(pt -> map.containsKey(pt))
+				.filter(pt -> map.get(pt) == CellType.BLANK)
+				.filter(pt -> pt.equals(location) || !allUnits.stream().map(Unit::getLocation).collect(Collectors.toSet()).contains(pt))
+				.collect(Collectors.toSet());
+		}
+		
+		public Set<Point2D> getAdjacentPts(Point2D point) {
+			double x = point.getX();
+			double y = point.getY();
 			return Stream.of(new Point2D.Double(x, y - 1),
 				new Point2D.Double(x - 1, y),
 				new Point2D.Double(x + 1, y),
 				new Point2D.Double(x, y + 1))
-				.filter(pt -> map.containsKey(pt))
-				.filter(pt -> map.get(pt) == CellType.BLANK)
-				.filter(pt -> !allUnits.stream().map(Unit::getLocation).collect(Collectors.toSet()).contains(pt))
 				.collect(Collectors.toSet());
 		}
 		
 		public Optional<Unit> tryAttack(List<Unit> enemies) {
-			Set<Point2D> adjacentPts = getOpenAdjacentPts();
+			Set<Point2D> adjacentPts = getAdjacentPts(location);
 			return enemies.stream()
 				.filter(e -> adjacentPts.contains(e.getLocation()))
 				.sorted()
@@ -220,8 +254,8 @@ public class Day15 implements Solution<String>{
 				final PathNode node = pathingQueue.poll();
 				if (node.pt.equals(location)) {
 					List<Point2D> answer = new ArrayList<>();
-					answer.add(node.pt);
 					PathNode searchNode = node;
+					//don't add first point to answer; it's the location that the unit is already at
 					while(searchNode.previous != null) {
 						searchNode = searchNode.previous;
 						answer.add(searchNode.pt);
