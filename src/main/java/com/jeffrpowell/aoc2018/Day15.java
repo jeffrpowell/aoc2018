@@ -74,12 +74,12 @@ public class Day15 implements Solution<String>{
 		}
 		int turns = -1;
 		boolean complete = false;
-		printGrid();
+//		printGrid();
 		while(!complete) {
 			turns++;
 			complete = evalRound();
 		}
-		return Integer.toString(allUnits.stream().map(Unit::getHp).reduce(1, Math::multiplyExact) * turns);
+		return Integer.toString(allUnits.stream().map(Unit::getHp).reduce(0, Math::addExact) * turns);
 	}
 
 	@Override
@@ -91,37 +91,46 @@ public class Day15 implements Solution<String>{
 	private boolean evalRound() {
 		allUnits.sort(null);
 		Set<Unit> eliminatedUnits = new HashSet<>();
+		boolean combatEnded = false;
+		int unitsWithTurnThisRound = 0;
 		for (Unit unit : allUnits)
 		{
+			if (elves.isEmpty() || goblins.isEmpty()) {
+				combatEnded = true;
+				break;
+			}
+			unitsWithTurnThisRound++;
 			if (eliminatedUnits.contains(unit)) {
 				continue;
 			}
 			List<Unit> enemies = unit.isElf() ? goblins : elves;
+			unit.tryMove(enemies);
 			Optional<Unit> attackedUnit = unit.tryAttack(enemies);
 			if (attackedUnit.isPresent()) {
-				boolean dead = unit.takeDamage(3);
+				boolean dead = attackedUnit.get().takeDamage(3);
 				if (dead) {
-					eliminatedUnits.add(unit);
-					enemies.remove(unit);
+					printGrid();
+					eliminatedUnits.add(attackedUnit.get());
+					enemies.remove(attackedUnit.get());
 					if (enemies.isEmpty()){
-						return true;
+						if (unitsWithTurnThisRound < allUnits.size()) { //if the last unit is killed by the last unit in the rotation, count the round
+							combatEnded = true;
+						}
+						break;
 					}
 				}
 			}
-			else {
-				unit.tryMove(enemies);
-			}
-			printGrid();
+//			printGrid();
 		}
 		allUnits.removeAll(eliminatedUnits);
-		return false;
+		return combatEnded;
 	}
 	
 	private void printGrid() {
 		StringBuilder builder = new StringBuilder();
-		for (int y = 0; y < 7; y++)
+		for (int y = 0; y < 32; y++)
 		{
-			for (int x = 0; x < 7; x++)
+			for (int x = 0; x < 32; x++)
 			{
 				Point2D pt = new Point2D.Double(x, y);
 				CellType type = map.get(pt);
@@ -129,12 +138,18 @@ public class Day15 implements Solution<String>{
 					builder.append('#');
 				}
 				else {
-					Optional<Unit> unit = allUnits.stream().filter(u -> u.getLocation().equals(pt)).findAny();
-					if (unit.isPresent()) {
-						builder.append(unit.get().isElf() ? 'E' : 'G');
+					Optional<Unit> goblin = goblins.stream().filter(u -> u.getLocation().equals(pt)).findAny();
+					if (goblin.isPresent()) {
+						builder.append('G');
 					}
 					else {
-						builder.append('.');
+						Optional<Unit> elf = elves.stream().filter(u -> u.getLocation().equals(pt)).findAny();
+						if (elf.isPresent()) {
+							builder.append('E');
+						}
+						else {
+							builder.append('.');
+						}
 					}
 				}
 			}
@@ -200,8 +215,6 @@ public class Day15 implements Solution<String>{
 		}
 		
 		public Set<Point2D> getOpenAdjacentPts(Point2D point) {
-			double x = point.getX();
-			double y = point.getY();
 			return getAdjacentPts(point).stream()
 				.filter(pt -> map.containsKey(pt))
 				.filter(pt -> map.get(pt) == CellType.BLANK)
@@ -223,11 +236,23 @@ public class Day15 implements Solution<String>{
 			Set<Point2D> adjacentPts = getAdjacentPts(location);
 			return enemies.stream()
 				.filter(e -> adjacentPts.contains(e.getLocation()))
-				.sorted()
+				.sorted((e1, e2) -> {
+					if (e1.getHp() < e2.getHp()) {
+						return -1;
+					}
+					if (e2.getHp() < e1.getHp()) {
+						return 1;
+					}
+					return PT_COMPARATOR.compare(e1.getLocation(), e2.getLocation());
+				})
 				.findFirst();
 		}
 		
 		public void tryMove(List<Unit> enemies) {
+			Set<Point2D> adjacentPts = getAdjacentPts(location);
+			if (enemies.stream().map(Unit::getLocation).anyMatch(adjacentPts::contains)) {
+				return;
+			}
 			Optional<List<Point2D>> targetPts = enemies.stream()
 				.map(Unit::getOpenAdjacentPts)
 				.flatMap(Set::stream)
@@ -248,10 +273,17 @@ public class Day15 implements Solution<String>{
 		private List<Point2D> getPathToPt(Point2D targetPt) {
 			pathingQueue.clear();
 			Set<Point2D> visitedPts = new HashSet<>();
+			List<List<Point2D>> possibleAnswers = new ArrayList<>();
 			//should be faster to search in reverse direction, due to frequent crowding around targets
 			pathingQueue.add(new PathNode(null, 0, targetPt, location));
 			while(!pathingQueue.isEmpty()) {
 				final PathNode node = pathingQueue.poll();
+				if (!possibleAnswers.isEmpty() && node.distance > possibleAnswers.get(0).size()) {
+					if (!node.pt.equals(location)) {
+						visitedPts.add(node.pt);
+					}
+					continue;
+				}
 				if (node.pt.equals(location)) {
 					List<Point2D> answer = new ArrayList<>();
 					PathNode searchNode = node;
@@ -260,14 +292,18 @@ public class Day15 implements Solution<String>{
 						searchNode = searchNode.previous;
 						answer.add(searchNode.pt);
 					}
-					return answer;
+					if (answer.size() < possibleAnswers.size()) {
+						possibleAnswers.clear();
+					}
+					possibleAnswers.add(answer);
+					continue;
 				}
 				visitedPts.add(node.pt);
 				getOpenAdjacentPts(node.pt).stream()
 					.filter(p -> !visitedPts.contains(p))
 					.forEach(p -> pathingQueue.offer(new PathNode(node, node.distance + 1, p, location)));
 			}
-			return Collections.emptyList();
+			return possibleAnswers.stream().sorted((a1, a2) -> PT_COMPARATOR.compare(a1.get(0), a2.get(0))).findFirst().orElse(Collections.emptyList());
 		}
 
 		@Override
@@ -307,6 +343,12 @@ public class Day15 implements Solution<String>{
 			}
 			return Objects.equals(this.location, other.location);
 		}
+
+		@Override
+		public String toString()
+		{
+			return (elf ? "E" : "G") + hp + " ("+location.getX()+","+location.getY()+")";
+		}
 		
 		public class PathNode {
 			PathNode previous;
@@ -324,6 +366,11 @@ public class Day15 implements Solution<String>{
 
 			public double getScore() {
 				return distance + pt.distance(target);
+			}
+			
+			@Override
+			public String toString() {
+				return distance + " -> " + pt.getX() + "," + pt.getY();
 			}
 		}
 	}
