@@ -38,8 +38,20 @@ public class Day15 implements Solution<String>{
 		return 0;
 	};
 	private static final Comparator<Unit.PathNode> PATH_COMPARATOR = (a, b) -> {
-		return Double.compare(a.getScore(), b.getScore());
+		int comparison = Double.compare(a.getScore(), b.getScore());
+        if (comparison != 0) {
+            return comparison;
+        }
+        //Prefer reading order of the nodes, starting at root
+        Unit.PathNode searchNodeA = a;
+        Unit.PathNode searchNodeB = b;
+        while(searchNodeA.previous != null && searchNodeB.previous != null && !searchNodeA.pt.equals(searchNodeB.pt)){
+            searchNodeA = searchNodeA.previous;
+            searchNodeB = searchNodeB.previous;
+        }
+        return PT_COMPARATOR.compare(searchNodeA.pt, searchNodeB.pt);
 	};
+    private int mapSize;
 	private Map<Point2D, CellType> map;
 	private List<Unit> goblins;
 	private List<Unit> elves;
@@ -52,6 +64,8 @@ public class Day15 implements Solution<String>{
 		goblins = new ArrayList<>();
 		elves = new ArrayList<>();
 		allUnits = new ArrayList<>();
+        
+        mapSize = input.size();
 		for (int y = 0; y < input.size(); y++)
 		{
 			String row = input.get(y);
@@ -74,10 +88,10 @@ public class Day15 implements Solution<String>{
 		}
 		int turns = -1;
 		boolean complete = false;
-//		printGrid();
+		printGrid(0);
 		while(!complete) {
 			turns++;
-			complete = evalRound();
+			complete = evalRound(turns);
 		}
 		return Integer.toString(allUnits.stream().map(Unit::getHp).reduce(0, Math::addExact) * turns);
 	}
@@ -88,7 +102,7 @@ public class Day15 implements Solution<String>{
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 	
-	private boolean evalRound() {
+	private boolean evalRound(int currentTurn) {
 		allUnits.sort(null);
 		Set<Unit> eliminatedUnits = new HashSet<>();
 		boolean combatEnded = false;
@@ -104,14 +118,14 @@ public class Day15 implements Solution<String>{
 				continue;
 			}
 			List<Unit> enemies = unit.isElf() ? goblins : elves;
-			unit.tryMove(enemies);
+			unit.tryMove(enemies, currentTurn);
 			Optional<Unit> attackedUnit = unit.tryAttack(enemies);
 			if (attackedUnit.isPresent()) {
 				boolean dead = attackedUnit.get().takeDamage(3);
 				if (dead) {
-					printGrid();
 					eliminatedUnits.add(attackedUnit.get());
 					enemies.remove(attackedUnit.get());
+					printGrid(currentTurn);
 					if (enemies.isEmpty()){
 						if (unitsWithTurnThisRound < allUnits.size()) { //if the last unit is killed by the last unit in the rotation, count the round
 							combatEnded = true;
@@ -120,17 +134,16 @@ public class Day15 implements Solution<String>{
 					}
 				}
 			}
-//			printGrid();
 		}
 		allUnits.removeAll(eliminatedUnits);
 		return combatEnded;
 	}
 	
-	private void printGrid() {
-		StringBuilder builder = new StringBuilder();
-		for (int y = 0; y < 32; y++)
+	private void printGrid(int currentTurn) {
+		StringBuilder builder = new StringBuilder("\nRound ").append(currentTurn).append("\n");
+		for (int y = 0; y < mapSize; y++)
 		{
-			for (int x = 0; x < 32; x++)
+			for (int x = 0; x < mapSize; x++)
 			{
 				Point2D pt = new Point2D.Double(x, y);
 				CellType type = map.get(pt);
@@ -248,7 +261,7 @@ public class Day15 implements Solution<String>{
 				.findFirst();
 		}
 		
-		public void tryMove(List<Unit> enemies) {
+		public void tryMove(List<Unit> enemies, int currentTurn) {
 			Set<Point2D> adjacentPts = getAdjacentPts(location);
 			if (enemies.stream().map(Unit::getLocation).anyMatch(adjacentPts::contains)) {
 				return;
@@ -256,6 +269,7 @@ public class Day15 implements Solution<String>{
 			Optional<List<Point2D>> targetPts = enemies.stream()
 				.map(Unit::getOpenAdjacentPts)
 				.flatMap(Set::stream)
+                .distinct()
 				.map(this::getPathToPt)
 				.filter(path -> !path.isEmpty())
 				.sorted(Comparator.comparing(path -> path.size()))
@@ -264,10 +278,13 @@ public class Day15 implements Solution<String>{
 						return Integer.compare(path1.size(), path2.size());
 					}
 					else {
-						return PT_COMPARATOR.compare(path1.get(0), path2.get(0)); //Might be a bug; may need to establish reading order per target first, then do global distance
+						return PT_COMPARATOR.compare(path1.get(0), path2.get(0));
 					}
 				}));
-			targetPts.ifPresent(path -> location = path.get(0));
+			targetPts.ifPresent(path -> {
+                location = path.get(0);
+                printGrid(currentTurn);
+            });
 		}
 		
 		private List<Point2D> getPathToPt(Point2D targetPt) {
@@ -285,13 +302,7 @@ public class Day15 implements Solution<String>{
 					continue;
 				}
 				if (node.pt.equals(location)) {
-					List<Point2D> answer = new ArrayList<>();
-					PathNode searchNode = node;
-					//don't add first point to answer; it's the location that the unit is already at
-					while(searchNode.previous != null) {
-						searchNode = searchNode.previous;
-						answer.add(searchNode.pt);
-					}
+					List<Point2D> answer = node.generateFullPath();
 					if (answer.size() < possibleAnswers.size()) {
 						possibleAnswers.clear();
 					}
@@ -301,7 +312,10 @@ public class Day15 implements Solution<String>{
 				visitedPts.add(node.pt);
 				getOpenAdjacentPts(node.pt).stream()
 					.filter(p -> !visitedPts.contains(p))
-					.forEach(p -> pathingQueue.offer(new PathNode(node, node.distance + 1, p, location)));
+					.forEach(p -> {
+                        pathingQueue.offer(new PathNode(node, node.distance + 1, p, location));
+                        visitedPts.add(p);
+                    });
 			}
 			return possibleAnswers.stream().sorted((a1, a2) -> PT_COMPARATOR.compare(a1.get(0), a2.get(0))).findFirst().orElse(Collections.emptyList());
 		}
@@ -367,10 +381,21 @@ public class Day15 implements Solution<String>{
 			public double getScore() {
 				return distance + pt.distance(target);
 			}
+            
+            public List<Point2D> generateFullPath() {
+                List<Point2D> path = new ArrayList<>();
+                //don't add first point to answer; it's the location that the unit is already at
+                PathNode searchNode = this;
+                while(searchNode.previous != null) {
+                    searchNode = searchNode.previous;
+                    path.add(searchNode.pt);
+                }
+                return path;
+            }
 			
 			@Override
 			public String toString() {
-				return distance + " -> " + pt.getX() + "," + pt.getY();
+				return (previous == null ? "" : "("+previous.pt.getX()+","+previous.pt.getY()+") ") + distance + " -> " + pt.getX() + "," + pt.getY();
 			}
 		}
 	}

@@ -23,6 +23,11 @@ public class Tests
 	public static final List<Integer> DAY14 = new ArrayList<>();
 	public static final List<Integer> DAY14_2 = new ArrayList<>();
 	public static final List<String> DAY15 = new ArrayList<>();
+	public static final List<String> DAY15_2 = new ArrayList<>();
+	public static final List<String> DAY15_3 = new ArrayList<>();
+	public static final List<String> DAY15_4 = new ArrayList<>();
+	public static final List<String> DAY15_5 = new ArrayList<>();
+	public static final List<String> DAY15_6 = new ArrayList<>();
     
     static {
         DAY3.add("#1 @ 1,3: 4x4");
@@ -284,6 +289,7 @@ public class Tests
 //</editor-fold>
 		DAY14.add(5);
 		DAY14_2.add(51589);
+        //<editor-fold defaultstate="collapsed" desc="day 15">
 		DAY15.add("#######");
 		DAY15.add("#.G...#");
 		DAY15.add("#...EG#");
@@ -291,5 +297,69 @@ public class Tests
 		DAY15.add("#..G#E#");
 		DAY15.add("#.....#");
 		DAY15.add("#######"); //47*590 = 27730
+
+		DAY15_2.add("#######"); //       #######
+		DAY15_2.add("#G..#E#"); //       #...#E#   E(200)
+		DAY15_2.add("#E#E.E#"); //       #E#...#   E(197)
+		DAY15_2.add("#G.##.#"); //  -->  #.E##.#   E(185)
+		DAY15_2.add("#...#E#"); //       #E..#E#   E(200), E(200)
+		DAY15_2.add("#...E.#"); //       #.....#
+		DAY15_2.add("#######"); //       #######
+
+//		Combat ends after 37 full rounds
+//		Elves win with 982 total hit points left
+//		Outcome: 37 * 982 = 36334
+
+		DAY15_3.add("#######"); //       #######   
+		DAY15_3.add("#E..EG#"); //       #.E.E.#   E(164), E(197)
+		DAY15_3.add("#.#G.E#"); //       #.#E..#   E(200)
+		DAY15_3.add("#E.##E#"); //  -->  #E.##.#   E(98)
+		DAY15_3.add("#G..#.#"); //       #.E.#.#   E(200)
+		DAY15_3.add("#..E#.#"); //       #...#.#   
+		DAY15_3.add("#######"); //       #######   
+
+//		Combat ends after 46 full rounds
+//		Elves win with 859 total hit points left
+//		Outcome: 46 * 859 = 39514
+
+		DAY15_4.add("#######"); //       #######   
+		DAY15_4.add("#E.G#.#"); //       #G.G#.#   G(200), G(98)
+		DAY15_4.add("#.#G..#"); //       #.#G..#   G(200)
+		DAY15_4.add("#G.#.G#"); //  -->  #..#..#   
+		DAY15_4.add("#G..#.#"); //       #...#G#   G(95)
+		DAY15_4.add("#...E.#"); //       #...G.#   G(200)
+		DAY15_4.add("#######"); //       #######   
+
+//		Combat ends after 35 full rounds
+//		Goblins win with 793 total hit points left
+//		Outcome: 35 * 793 = 27755
+
+		DAY15_5.add("#######"); //       #######   
+		DAY15_5.add("#.E...#"); //       #.....#   
+		DAY15_5.add("#.#..G#"); //       #.#G..#   G(200)
+		DAY15_5.add("#.###.#"); //  -->  #.###.#   
+		DAY15_5.add("#E#G#G#"); //       #.#.#.#   
+		DAY15_5.add("#...#G#"); //       #G.G#G#   G(98), G(38), G(200)
+		DAY15_5.add("#######"); //       #######   
+
+//		Combat ends after 54 full rounds
+//		Goblins win with 536 total hit points left
+//		Outcome: 54 * 536 = 28944
+
+		DAY15_6.add("#########"); //       #########   
+		DAY15_6.add("#G......#"); //       #.G.....#   G(137)
+		DAY15_6.add("#.E.#...#"); //       #G.G#...#   G(200), G(200)
+		DAY15_6.add("#..##..G#"); //       #.G##...#   G(200)
+		DAY15_6.add("#...##..#"); //  -->  #...##..#   
+		DAY15_6.add("#...#...#"); //       #.G.#...#   G(200)
+		DAY15_6.add("#.G...G.#"); //       #.......#   
+		DAY15_6.add("#.....G.#"); //       #.......#   
+		DAY15_6.add("#########"); //       #########   
+
+//		Combat ends after 20 full rounds
+//		Goblins win with 937 total hit points left
+//		Outcome: 20 * 937 = 18740
+
+        //</editor-fold>
 	}
 }
