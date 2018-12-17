@@ -45,7 +45,7 @@ public class Day15 implements Solution<String>{
         //Prefer reading order of the nodes, starting at root
         Unit.PathNode searchNodeA = a;
         Unit.PathNode searchNodeB = b;
-        while(searchNodeA.previous != null && searchNodeB.previous != null && !searchNodeA.pt.equals(searchNodeB.pt)){
+        while(searchNodeA.previous != null && searchNodeB.previous != null && searchNodeA.pt.equals(searchNodeB.pt)){
             searchNodeA = searchNodeA.previous;
             searchNodeB = searchNodeB.previous;
         }
@@ -314,7 +314,9 @@ public class Day15 implements Solution<String>{
 					.filter(p -> !visitedPts.contains(p))
 					.forEach(p -> {
                         pathingQueue.offer(new PathNode(node, node.distance + 1, p, location));
-                        visitedPts.add(p);
+                        if (!p.equals(location)) {
+                            visitedPts.add(p);
+                        }
                     });
 			}
 			return possibleAnswers.stream().sorted((a1, a2) -> PT_COMPARATOR.compare(a1.get(0), a2.get(0))).findFirst().orElse(Collections.emptyList());
@@ -379,8 +381,12 @@ public class Day15 implements Solution<String>{
 			}
 
 			public double getScore() {
-				return distance + pt.distance(target);
+				return distance + getManhattenDistance(pt, target);//pt.distance(target);//
 			}
+            
+            private double getManhattenDistance(Point2D pt1, Point2D pt2) {
+                return Math.abs(pt1.getY() - pt2.getY()) + Math.abs(pt1.getX() - pt2.getX());
+            }
             
             public List<Point2D> generateFullPath() {
                 List<Point2D> path = new ArrayList<>();
@@ -392,7 +398,7 @@ public class Day15 implements Solution<String>{
                 }
                 return path;
             }
-			
+            
 			@Override
 			public String toString() {
 				return (previous == null ? "" : "("+previous.pt.getX()+","+previous.pt.getY()+") ") + distance + " -> " + pt.getX() + "," + pt.getY();
