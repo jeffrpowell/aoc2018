@@ -92,6 +92,7 @@ public class Day15 implements Solution<String>{
 		while(!complete) {
 			turns++;
 			complete = evalRound(turns);
+            printGrid(turns + 1);
 		}
 		return Integer.toString(allUnits.stream().map(Unit::getHp).reduce(0, Math::addExact) * turns);
 	}
@@ -119,13 +120,12 @@ public class Day15 implements Solution<String>{
 			}
 			List<Unit> enemies = unit.isElf() ? goblins : elves;
 			unit.tryMove(enemies, currentTurn);
-			Optional<Unit> attackedUnit = unit.tryAttack(enemies);
+            Optional<Unit> attackedUnit = unit.tryAttack(enemies);
 			if (attackedUnit.isPresent()) {
 				boolean dead = attackedUnit.get().takeDamage(3);
 				if (dead) {
 					eliminatedUnits.add(attackedUnit.get());
 					enemies.remove(attackedUnit.get());
-					printGrid(currentTurn);
 					if (enemies.isEmpty()){
 						if (unitsWithTurnThisRound < allUnits.size()) { //if the last unit is killed by the last unit in the rotation, count the round
 							combatEnded = true;
@@ -231,7 +231,9 @@ public class Day15 implements Solution<String>{
 			return getAdjacentPts(point).stream()
 				.filter(pt -> map.containsKey(pt))
 				.filter(pt -> map.get(pt) == CellType.BLANK)
-				.filter(pt -> pt.equals(location) || !allUnits.stream().map(Unit::getLocation).collect(Collectors.toSet()).contains(pt))
+				.filter(pt -> pt.equals(location) || 
+                              (!goblins.stream().map(Unit::getLocation).collect(Collectors.toSet()).contains(pt) && 
+                              !elves.stream().map(Unit::getLocation).collect(Collectors.toSet()).contains(pt)))
 				.collect(Collectors.toSet());
 		}
 		
@@ -278,23 +280,31 @@ public class Day15 implements Solution<String>{
 						return Integer.compare(path1.size(), path2.size());
 					}
 					else {
-						return PT_COMPARATOR.compare(path1.get(0), path2.get(0));
+						int targetPtComparison = PT_COMPARATOR.compare(path1.get(path1.size() - 1), path2.get(path2.size() - 1));
+                        if (targetPtComparison != 0) {
+                            return targetPtComparison;
+                        }
+                        else {
+                            return PT_COMPARATOR.compare(path1.get(0), path2.get(0));
+                        }
 					}
 				}));
 			targetPts.ifPresent(path -> {
                 location = path.get(0);
-                printGrid(currentTurn);
+//                printGrid(currentTurn);
             });
 		}
 		
 		private List<Point2D> getPathToPt(Point2D targetPt) {
 			pathingQueue.clear();
 			Set<Point2D> visitedPts = new HashSet<>();
+            Map<Point2D, PathNode> pendingPts = new HashMap<>();
 			List<List<Point2D>> possibleAnswers = new ArrayList<>();
 			//should be faster to search in reverse direction, due to frequent crowding around targets
 			pathingQueue.add(new PathNode(null, 0, targetPt, location));
 			while(!pathingQueue.isEmpty()) {
 				final PathNode node = pathingQueue.poll();
+//                pendingPts.remove(node.pt);
 				if (!possibleAnswers.isEmpty() && node.distance > possibleAnswers.get(0).size()) {
 					if (!node.pt.equals(location)) {
 						visitedPts.add(node.pt);
@@ -303,7 +313,7 @@ public class Day15 implements Solution<String>{
 				}
 				if (node.pt.equals(location)) {
 					List<Point2D> answer = node.generateFullPath();
-					if (answer.size() < possibleAnswers.size()) {
+					if (!possibleAnswers.isEmpty() && answer.size() < possibleAnswers.get(0).size()) {
 						possibleAnswers.clear();
 					}
 					possibleAnswers.add(answer);
@@ -313,13 +323,26 @@ public class Day15 implements Solution<String>{
 				getOpenAdjacentPts(node.pt).stream()
 					.filter(p -> !visitedPts.contains(p))
 					.forEach(p -> {
-                        pathingQueue.offer(new PathNode(node, node.distance + 1, p, location));
+                        PathNode newPath = new PathNode(node, node.distance + 1, p, location);
+                        pathingQueue.offer(newPath);
+                        PathNode submittedPath = pendingPts.get(p);
                         if (!p.equals(location)) {
-                            visitedPts.add(p);
+                            if (submittedPath == null) {
+                                pendingPts.put(p, newPath);
+                                pathingQueue.offer(newPath);
+                            }
+                            else {
+                                int pathComparison = PATH_COMPARATOR.compare(newPath, submittedPath);
+                                if (pathComparison < 0) {
+                                    pendingPts.put(p, newPath);
+                                    pathingQueue.offer(newPath);
+                                }
+                            }
                         }
                     });
 			}
-			return possibleAnswers.stream().sorted((a1, a2) -> PT_COMPARATOR.compare(a1.get(0), a2.get(0))).findFirst().orElse(Collections.emptyList());
+            List<Point2D> answer = possibleAnswers.stream().sorted((a1, a2) -> PT_COMPARATOR.compare(a1.get(0), a2.get(0))).findFirst().orElse(Collections.emptyList());
+			return answer;
 		}
 
 		@Override
