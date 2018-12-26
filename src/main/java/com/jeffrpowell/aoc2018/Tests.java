@@ -29,6 +29,7 @@ public class Tests
 	public static final List<String> DAY15_5 = new ArrayList<>();
 	public static final List<String> DAY15_6 = new ArrayList<>();
     public static final List<String> DAY15_7 = new ArrayList<>();
+    public static final List<String> DAY25 = new ArrayList<>();
     
     static {
         DAY3.add("#1 @ 1,3: 4x4");
@@ -395,5 +396,15 @@ public class Tests
 		DAY15_7.add("#...#..#.......#################");
 		DAY15_7.add("################################");        
         //</editor-fold>
+        DAY25.add("1,-1,-1,-2");
+        DAY25.add("-2,-2,0,1");
+        DAY25.add("0,2,1,3");
+        DAY25.add("-2,3,-2,1");
+        DAY25.add("0,2,3,-2");
+        DAY25.add("-1,-1,1,-2");
+        DAY25.add("0,-2,-1,0");
+        DAY25.add("-2,2,3,-1");
+        DAY25.add("1,2,2,0");
+        DAY25.add("-1,-2,0,-2");
 	}
 }
